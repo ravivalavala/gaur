@@ -1,0 +1,106 @@
+/* =========================
+   HERO SECTIONS
+========================= */
+
+.hero {
+    position: relative;
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    color: #fff;
+    padding: 100px 0;
+    
+    /* ADD THESE BORDER PROPERTIES */
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 
+                0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    margin: 20px auto;
+    max-width: 95%;
+    overflow: hidden;
+}
+
+/* Remove default overlay, can add per-hero if needed */
+.hero-overlay {
+    display: none;
+}
+
+/* Frosted glass effect behind hero text */
+.hero-content {
+    position: relative;
+    z-index: 2;
+    background-color: rgba(255, 255, 255, 0.3); /* semi-transparent */
+    backdrop-filter: blur(8px); /* frosted glass blur */
+    -webkit-backdrop-filter: blur(8px); /* Safari support */
+    padding: 30px 40px;
+    border-radius: 12px;
+    text-align: center;
+    max-width: 80%;
+    margin: 0 auto;
+    
+    /* Add border to content box too */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Hero headline with gradient */
+.hero-content h1 {
+    font-size: 3rem; /* adjust for desktop */
+    font-weight: 700;
+    background: linear-gradient(90deg, #e63946, #f77f00); /* red to orange */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 15px;
+}
+
+/* Hero subtext */
+.hero-content p {
+    font-size: 1.25rem;
+    color: #ffffff;
+    margin: 0;
+}
+
+/* Hero button styling */
+.hero-content .btn {
+    font-size: 1.1rem;
+    padding: 12px 30px;
+    border-radius: 8px;
+}
+
+/* =========================
+   Responsive adjustments
+========================= */
+@media (max-width: 992px) {
+    .hero-content h1 {
+        font-size: 2.5rem;
+    }
+    .hero-content p {
+        font-size: 1.1rem;
+    }
+    .hero-content {
+        padding: 25px 30px;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-content h1 {
+        font-size: 2rem;
+    }
+    .hero-content p {
+        font-size: 1rem;
+    }
+    .hero-content {
+        padding: 20px;
+    }
+    
+    /* Reduce border on mobile */
+    .hero {
+        border-width: 2px;
+        border-radius: 12px;
+        margin: 15px auto;
+    }
+}

@@ -1,0 +1,189 @@
+/*
+ * GAUR Theme – Premium Single Product Layout
+ * Focus: High-end typography, clean whitespace, and grid-based gallery
+ */
+
+:root {
+    --primary-black: #1a1a1a;
+    --accent-red: #dc3545;
+    --light-gray: #f8f9fa;
+    --border-color: #ececec;
+    --text-muted: #666;
+    --premium-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+    -webkit-font-smoothing: antialiased;
+    font-family: var(--premium-font);
+    color: var(--primary-black);
+}
+
+/* ==============================
+   BREADCRUMBS
+================================ */
+.woocommerce-breadcrumb {
+    font-size: 0.75rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 2rem !important;
+}
+
+.woocommerce-breadcrumb a {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.woocommerce-breadcrumb a:hover {
+    color: var(--primary-black);
+}
+
+/* ==============================
+   GALLERY & FIXED THUMBNAILS
+================================ */
+
+/* Constrain main image */
+.woocommerce-product-gallery__image img {
+    width: 100%;
+    object-fit: contain;
+    border-radius: 8px;
+    background: #fff;
+}
+
+/* Force thumbnails into a grid to prevent "giant thumbnail" bug */
+.woocommerce-product-gallery ol.flex-control-nav.flex-control-thumbs {
+    display: grid !important;
+    grid-template-columns: repeat(6, 1fr) !important;
+    gap: 8px !important;
+    padding: 0 !important;
+    margin: 15px 0 !important;
+    list-style: none !important;
+    width: 100% !important;
+}
+
+.woocommerce-product-gallery ol.flex-control-nav.flex-control-thumbs li {
+    width: 100% !important;
+    margin: 0 !important;
+}
+
+.woocommerce-product-gallery ol.flex-control-nav.flex-control-thumbs li img {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 1 / 1 !important;
+    object-fit: cover !important;
+    border: 1px solid #dee2e6 !important;
+    border-radius: 4px !important;
+    background: var(--light-gray) !important;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.woocommerce-product-gallery ol.flex-control-nav.flex-control-thumbs li img:hover {
+    border-color: var(--primary-black) !important;
+}
+
+.woocommerce-product-gallery ol.flex-control-nav.flex-control-thumbs li img.flex-active {
+    border: 2px solid var(--accent-red) !important;
+}
+
+/* ==============================
+   PRODUCT INFORMATION
+================================ */
+
+/* Title styling from single-product.php class */
+h1.display-6 {
+    font-size: 2.25rem;
+    font-weight: 700 !important;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.75rem !important;
+}
+
+/* Price - Premium Clean Look */
+.h3.text-danger {
+    color: var(--primary-black) !important;
+    font-weight: 500;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem !important;
+}
+
+/* Description Block */
+.product-full-description {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: #444;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem !important;
+}
+
+/* ==============================
+   PURCHASE SECTION
+================================ */
+
+/* Quantity Input */
+.quantity input.qty {
+    height: 48px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-weight: 600;
+    padding: 0 10px;
+}
+
+/* Add to Cart Button */
+button.single_add_to_cart_button {
+    background-color: var(--primary-black) !important;
+    color: #fff !important;
+    padding: 12px 35px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 4px !important;
+    transition: transform 0.2s ease, opacity 0.2s ease !important;
+    border: none !important;
+}
+
+button.single_add_to_cart_button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+/* ==============================
+   META & TABS
+================================ */
+
+.product-meta {
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+    color: var(--text-muted);
+}
+
+.product-meta p {
+    font-size: 0.75rem;
+    margin-bottom: 0.5rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.product-meta .fw-bold {
+    color: var(--primary-black);
+}
+
+.woocommerce-tabs {
+    margin-top: 4rem !important;
+    border-top: 1px solid var(--border-color);
+    padding-top: 2rem;
+}
+
+/* Responsive adjustments for Grid */
+@media (max-width: 992px) {
+    .woocommerce-product-gallery ol.flex-control-nav.flex-control-thumbs {
+        grid-template-columns: repeat(5, 1fr) !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .woocommerce-product-gallery ol.flex-control-nav.flex-control-thumbs {
+        grid-template-columns: repeat(4, 1fr) !important;
+    }
+}

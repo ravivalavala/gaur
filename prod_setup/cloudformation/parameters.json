@@ -1,0 +1,26 @@
+[
+  {
+    "ParameterKey": "Environment",
+    "ParameterValue": "prd"
+  },
+  {
+    "ParameterKey": "KeyName",
+    "ParameterValue": "desti"
+  },
+  {
+    "ParameterKey": "DomainName",
+    "ParameterValue": "www.getgaur.com"
+  },
+  {
+    "ParameterKey": "DBName",
+    "ParameterValue": "wordpress"
+  },
+  {
+    "ParameterKey": "DBUser",
+    "ParameterValue": "wpadmin"
+  },
+  {
+    "ParameterKey": "DBPassword",
+    "ParameterValue": "StrongPassword123!"
+  }
+]

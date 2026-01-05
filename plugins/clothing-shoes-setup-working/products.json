@@ -1,0 +1,67 @@
+{
+  "products": [
+    {
+      "name": "Basic Cotton T-Shirt",
+      "sku": "TSH001",
+      "price": 19.99,
+      "categories": ["men-t-shirts"],
+      "description": "Comfortable 100% cotton t-shirt for everyday wear. Available in multiple colors.",
+      "stock_quantity": 50,
+      "image_folder": "TSH001"
+    },
+    {
+      "name": "Limited Edition \"Freedom\" Watercolor Tee – Premium 100% Cotton Statement Shirt",
+      "sku": "FREEDOM001",
+      "price": 49.99,
+      "categories": ["men-t-shirts"],
+      "description": "\"<h3 data-path-to-node=\"3\"><b data-path-to-node=\"3\" data-index-in-node=\"0\">The Story: More Than Just a Word</b></h3>\n<p data-path-to-node=\"4\">Freedom isn't just a word; it’s a lifestyle. Our signature <b data-path-to-node=\"4\" data-index-in-node=\"59\">\"Freedom\" Tee</b> features a custom, hand-painted watercolor American flag motif, designed for those who wear their values on their sleeve. Soft, breathable, and bold—this is the \"Hero\" shirt that started it all.</p>\n<p data-path-to-node=\"5\">Whether you’re looking for the perfect base layer or a standalone classic, this premium t-shirt is designed for maximum comfort and versatility. Crafted from <b data-path-to-node=\"5\" data-index-in-node=\"158\">100% high-quality cotton</b>, it offers a soft-to-the-touch feel that actually gets better with every wash.</p>\n\n\n<hr data-path-to-node=\"6\" />\n\n<h3 data-path-to-node=\"7\"><b data-path-to-node=\"7\" data-index-in-node=\"0\">Product Features</b></h3>\n<ul data-path-to-node=\"8\">\n \t<li>\n<p data-path-to-node=\"8,0,0\"><b data-path-to-node=\"8,0,0\" data-index-in-node=\"0\">The Artwork:</b> High-definition \"Freedom\" script over a vibrant watercolor US flag.</p>\n</li>\n \t<li>\n<p data-path-to-node=\"8,1,0\"><b data-path-to-node=\"8,1,0\" data-index-in-node=\"0\">Premium Material:</b> 100% Pure Cotton for ultimate breathability and long-lasting durability.</p>\n</li>\n \t<li>\n<p data-path-to-node=\"8,2,0\"><b data-path-to-node=\"8,2,0\" data-index-in-node=\"0\">The Perfect Fit:</b> A standard/classic cut designed to look great on any physique.</p>\n</li>\n \t<li>\n<p data-path-to-node=\"8,3,0\"><b data-path-to-node=\"8,3,0\" data-index-in-node=\"0\">Durable Detail:</b> Reinforced crew neck to maintain its shape over time.</p>\n</li>\n \t<li>\n<p data-path-to-node=\"8,4,0\"><b data-path-to-node=\"8,4,0\" data-index-in-node=\"0\">Easy Care:</b> Machine washable and pre-shrunk to minimize shrinking.</p>\n</li>\n</ul>\n<h3 data-path-to-node=\"9\"><b data-path-to-node=\"9\" data-index-in-node=\"0\">Why This is Your New Go-To Tee</b></h3>\n<p data-path-to-node=\"10\">From the gym to the backyard BBQ, or layered under a jacket for a night out, this tee is built for every occasion. The natural cotton fibers are hypoallergenic and moisture-wicking, keeping you cool and comfortable all day long. Upgrade your wardrobe today with a staple that never goes out of style.</p>\n\n\n<hr data-path-to-node=\"11\" />\n\n<h3 data-path-to-node=\"12\"><b data-path-to-node=\"12\" data-index-in-node=\"0\">Sizing &amp; Shipping</b></h3>\n<ul data-path-to-node=\"13\">\n \t<li>\n<p data-path-to-node=\"13,0,0\"><b data-path-to-node=\"13,0,0\" data-index-in-node=\"0\">Available Sizes:</b> S, M, L, XL, XXL (Please refer to the size chart in the gallery).</p>\n</li>\n \t<li>\n<p data-path-to-node=\"13,1,0\"><b data-path-to-node=\"13,1,0\" data-index-in-node=\"0\">Fast Shipping:</b> Dispatched from our warehouse within 24 hours of payment.</p>\n</li>\n \t<li>\n<p data-path-to-node=\"13,2,0\"><b data-path-to-node=\"13,2,0\" data-index-in-node=\"0\">Hassle-Free Returns:</b> Shop with confidence! We offer a 30-day return policy if the fit isn't perfect.</p>\n</li>\n</ul>\n\n<hr data-path-to-node=\"14\" />\n<p data-path-to-node=\"15\"></p>\"",
+      "stock_quantity": 30,
+      "image_folder": "FREEDOM001"
+    },
+    {
+      "name": "Running Sneakers",
+      "sku": "SNK001",
+      "price": 79.99,
+      "categories": ["men-sneakers"],
+      "description": "Lightweight running sneakers with cushion support for maximum comfort.",
+      "stock_quantity": 25,
+      "image_folder": "SNK001"
+    },
+    {
+      "name": "Formal Shirt",
+      "sku": "SHR001",
+      "price": 39.99,
+      "categories": ["men-shirts"],
+      "description": "Formal cotton shirt for business occasions. Iron-free fabric.",
+      "stock_quantity": 40,
+      "image_folder": "SHR001"
+    },
+    {
+      "name": "Summer Dress",
+      "sku": "DRS001",
+      "price": 59.99,
+      "categories": ["women-dresses"],
+      "description": "Light summer dress with floral pattern. Perfect for warm weather.",
+      "stock_quantity": 20,
+      "image_folder": "DRS001"
+    },
+    {
+      "name": "Leather Jacket",
+      "sku": "JCK001",
+      "price": 89.99,
+      "categories": ["men-clothing"],
+      "description": "Genuine leather jacket for men. Classic style with modern fit.",
+      "stock_quantity": 15,
+      "image_folder": "JCK001"
+    },
+    {
+      "name": "Winter Boots",
+      "sku": "BTS001",
+      "price": 69.99,
+      "categories": ["men-footwear"],
+      "description": "Waterproof winter boots with insulation. Perfect for cold weather.",
+      "stock_quantity": 18,
+      "image_folder": "BTS001"
+    }
+  ]
+}

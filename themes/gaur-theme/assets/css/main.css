@@ -1,0 +1,68 @@
+:root {
+    --gaur-primary: #000000;
+    --gaur-accent: #e63946;
+}
+
+/* Let Bootstrap handle body and basic typography */
+body {
+    padding-top: 70px; /* Offset for sticky header */
+}
+
+/* Custom components only */
+.brand-highlight { color: var(--gaur-accent); }
+
+.swatch-item {
+    transition: all 0.2s ease-in-out;
+}
+
+.swatch-item.active {
+    border-color: var(--gaur-accent) !important;
+    background-color: var(--gaur-accent) !important;
+    color: white !important;
+}
+
+/* Fix WooCommerce layout shifts */
+.price ins { text-decoration: none; font-weight: bold; }
+.price del { opacity: 0.5; font-size: 0.8em; }
+
+
+/* =========================
+   PRODUCT GRID
+========================= */
+.latest-products {
+    background: #fff;
+}
+
+.section-title {
+    font-weight: 700;
+    margin-bottom: 2rem;
+}
+
+.product-card {
+    border: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+.product-card .price {
+    font-weight: 700;
+}
+
+/* Force main gallery image to be responsive and uncropped */
+.woocommerce-product-gallery__image img {
+    max-width: 100% !important;
+    height: auto !important;
+    display: block;
+    margin: 0 auto;
+    object-fit: contain !important;
+}
+
+/* Ensure the gallery container doesn't cut off shadows or borders */
+.woocommerce-product-gallery {
+    overflow: visible !important;
+}
+

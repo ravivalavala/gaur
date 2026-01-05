@@ -1,0 +1,26 @@
+/* Figure image hover effect */
+.gaur-section .figure-img {
+    transition: transform 0.3s ease-in-out;
+}
+
+.gaur-section .figure:hover .figure-img {
+    transform: scale(1.03);
+}
+
+/* Remove default link colors on captions */
+.gaur-section .figure-caption h3 {
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Price styling within caption */
+.gaur-section .figure-caption .price {
+    font-size: 0.9rem;
+    color: #111;
+    font-weight: 600;
+}
+
+/* Red/Black section accents for the figure containers */
+.gaur-section.clothing h2 { border-left: 4px solid #e63946; padding-left: 15px; }
+.gaur-section.shoes h2 { border-left: 4px solid #000; padding-left: 15px; }

@@ -1,0 +1,30 @@
+[
+  {
+    "ParameterKey": "Environment",
+    "ParameterValue": "prd"
+  },
+  {
+    "ParameterKey": "KeyName",
+    "ParameterValue": "desti"
+  },
+  {
+    "ParameterKey": "DomainName",
+    "ParameterValue": "getgaur.com"
+  },
+  {
+    "ParameterKey": "DBName",
+    "ParameterValue": "wordpress"
+  },
+  {
+    "ParameterKey": "DBUser",
+    "ParameterValue": "wpadmin"
+  },
+  {
+    "ParameterKey": "DBPassword",
+    "ParameterValue": "StrongPassword123!"
+  },
+  {
+    "ParameterKey": "ACMCertArn",
+    "ParameterValue": "arn:aws:acm:us-east-1:190609546218:certificate/6c4db859-ce52-4129-9386-a9b97df74c25"
+  }
+]

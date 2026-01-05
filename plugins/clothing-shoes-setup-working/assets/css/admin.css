@@ -1,0 +1,97 @@
+.css-wrap {
+    max-width: 800px;
+    margin: 20px auto;
+}
+
+.css-card {
+    background: white;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+}
+
+.css-card h2 {
+    margin-top: 0;
+    color: #23282d;
+    border-bottom: 2px solid #0073aa;
+    padding-bottom: 10px;
+}
+
+.css-card ul {
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+.css-card li {
+    margin-bottom: 8px;
+}
+
+.button-large {
+    padding: 12px 24px;
+    font-size: 16px;
+    height: auto;
+}
+
+.css-progress {
+    margin: 20px 0;
+}
+
+.css-progress-bar {
+    height: 20px;
+    background: #f0f0f0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.css-progress-fill {
+    height: 100%;
+    background: #0073aa;
+    width: 0%;
+    transition: width 0.3s ease;
+    border-radius: 10px;
+}
+
+.css-progress-text {
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+}
+
+.css-status {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 4px;
+    display: none;
+}
+
+.css-status.success {
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+    display: block;
+}
+
+.css-status.error {
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+    display: block;
+}
+
+.css-status.processing {
+    background: #d1ecf1;
+    border: 1px solid #bee5eb;
+    color: #0c5460;
+    display: block;
+}
+
+.css-status ul {
+    margin: 10px 0 0 20px;
+}
+
+.css-status li {
+    margin-bottom: 5px;
+}

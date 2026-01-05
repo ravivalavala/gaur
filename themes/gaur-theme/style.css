@@ -1,0 +1,16 @@
+/*
+Theme Name: GAUR — Modern WooCommerce Store
+Theme URI: https://example.com/gaur-theme
+Author: Generated
+Author URI: https://example.com
+Description: A modern WooCommerce-ready theme based on the provided GAUR HTML layout.
+Version: 1.0.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: gaur-theme
+*/
+
+/* Optionally keep a minimal rule here; main styles are in assets/css/main.css */
+
+@import url('assets/css/main.css');
+@import url('assets/css/style.css');
