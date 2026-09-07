@@ -1,0 +1,13 @@
+# Local Terraform state, providers, and credentials
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+.env
+.env.*
+*.pem
+*.key
+
+# Local alternate upload archive
+/themes/gaur-theme_1.zip

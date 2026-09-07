@@ -105,6 +105,7 @@ add_shortcode('gaur_hero', function($atts) {
 
     $btn_text = get_post_meta(get_the_ID(), 'button_text', true);
     $btn_link = get_post_meta(get_the_ID(), 'button_link', true);
+
     $bg_img   = get_the_post_thumbnail_url(get_the_ID(), 'full');
     
     // Get unique class for this hero

@@ -91,7 +91,7 @@ add_action( 'wp_enqueue_scripts', function () {
 
     wp_enqueue_script(
         'gaur-theme',
-        get_template_directory_uri() . '/assets/js/theme.js',
+        get_template_directory_uri() . '/assets/js/main.js',
         [],
         wp_get_theme()->get( 'Version' ),
         true
@@ -102,6 +102,29 @@ add_action( 'wp_enqueue_scripts', function () {
 # Bootstrap Navwalker
 --------------------------------------------------------------*/
 require_once get_template_directory() . '/inc/class-wp-bootstrap-navwalker.php';
+
+add_filter( 'template_include', function ( $template ) {
+    if ( is_singular( 'product' ) ) {
+        return get_theme_file_path( 'single-product.php' );
+    }
+
+    return $template;
+}, 9999 );
+
+add_filter( 'the_content', function ( $content ) {
+    if ( ! is_singular( 'product' ) || ! in_the_loop() || ! is_main_query() ) {
+        return $content;
+    }
+
+    global $product;
+    if ( ! $product instanceof WC_Product || ! $product->is_type( 'variable' ) ) {
+        return $content;
+    }
+
+    ob_start();
+    woocommerce_variable_add_to_cart();
+    return $content . ob_get_clean();
+} );
 
 /*--------------------------------------------------------------
 # Widgets
@@ -133,11 +156,34 @@ add_action( 'pre_get_posts', function ( $query ) {
     if (
         ! is_admin() &&
         $query->is_main_query() &&
+        function_exists( 'is_shop' ) &&
         ( is_shop() || is_product_category() || is_product_tag() )
     ) {
         $query->set( 'posts_per_page', 12 );
     }
 });
+add_action( 'wp', function () {
+    if ( function_exists( 'is_shop' ) && ( is_shop() || is_product_category() || is_product_tag() ) ) {
+        remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_template_loop_product_thumbnail', 10 );
+        add_action( 'woocommerce_before_shop_loop_item_title', 'gaur_loop_product_image', 10 );
+    }
+}, 99 );
+
+function gaur_loop_product_image() {
+    global $product;
+
+    if ( $product && $product->get_image_id() ) {
+        echo wp_get_attachment_image(
+            $product->get_image_id(),
+            'full',
+            false,
+            [ 'class' => 'img-fluid woocommerce-loop-product__image-full' ]
+        );
+        return;
+    }
+
+    echo wc_placeholder_img( 'woocommerce_thumbnail' );
+}
 
 /* Force grid columns */
 add_filter( 'loop_shop_columns', fn() => 3 );
@@ -157,6 +203,18 @@ add_filter( 'woocommerce_add_to_cart_fragments', function ( $fragments ) {
     return $fragments;
 });
 
+function gaur_render_breadcrumbs() {
+    echo '<div class="gaur-breadcrumb" aria-label="Breadcrumb">';
+    woocommerce_breadcrumb();
+    echo '</div>';
+}
+
+add_action( 'woocommerce_before_shop_loop', function () {
+    if ( function_exists( 'is_shop' ) && ( is_shop() || is_product_category() || is_product_tag() ) ) {
+        gaur_render_breadcrumbs();
+    }
+}, 1 );
+
 /*--------------------------------------------------------------
 # Auto Create Primary Menu (Once)
 --------------------------------------------------------------*/
@@ -168,19 +226,42 @@ add_action( 'after_switch_theme', function () {
 
     $menu_id = wp_create_nav_menu( 'Primary Menu' );
 
+    $contact_page = get_page_by_path( 'contact' );
+    if ( ! $contact_page ) {
+        $contact_page_id = wp_insert_post( [
+            'post_title'  => __( 'Contact', 'gaur' ),
+            'post_name'   => 'contact',
+            'post_status' => 'publish',
+            'post_type'   => 'page',
+        ] );
+    }
+
     $items = [
         [ 'Home', home_url('/') ],
         [ 'Shop', home_url('/shop') ],
         [ 'Clothing', home_url('/product-category/clothing') ],
-        [ 'Shoes', home_url('/product-category/shoes') ],
+        [ 'Footwear', get_term_link('footwear', 'product_cat') ],
         [ 'Contact', home_url('/contact') ],
     ];
 
+    $menu_items = [];
     foreach ( $items as $item ) {
-        wp_update_nav_menu_item( $menu_id, 0, [
+        $menu_items[$item[0]] = wp_update_nav_menu_item( $menu_id, 0, [
             'menu-item-title'  => $item[0],
-            'menu-item-url'    => $item[1],
+            'menu-item-url'    => is_wp_error($item[1]) ? home_url('/') : $item[1],
             'menu-item-status' => 'publish',
+        ] );
+    }
+
+    foreach ( [
+        [ 'Boots', get_term_link('boots', 'product_cat') ],
+        [ 'Shoes', get_term_link('shoes', 'product_cat') ],
+    ] as $item ) {
+        wp_update_nav_menu_item( $menu_id, 0, [
+            'menu-item-title'      => $item[0],
+            'menu-item-url'        => is_wp_error($item[1]) ? home_url('/shop') : $item[1],
+            'menu-item-parent-id'  => $menu_items['Footwear'],
+            'menu-item-status'     => 'publish',
         ] );
     }
 

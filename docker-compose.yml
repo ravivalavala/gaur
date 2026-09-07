@@ -1,3 +1,4 @@
+
 version: '3.8'
 
 services:
@@ -25,6 +26,9 @@ services:
       WORDPRESS_DEBUG: 0
     volumes:
       - wordpress_data:/var/www/html/wp-content
+      - ./plugins/clothing-shoes-setup-working:/var/www/html/wp-content/plugins/clothing-shoes-setup-working
+      - ./themes:/var/www/html/wp-content/themes
+      - ./wordpress.htaccess:/var/www/html/.htaccess
     depends_on:
       - db
 

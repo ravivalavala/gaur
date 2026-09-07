@@ -2,7 +2,7 @@
 /* Template for pages */
 get_header();
 ?>
-<div class="container py-5">
+<main class="container py-5 gaur-page-content">
     <?php
     if (have_posts()) :
         while (have_posts()) : the_post();
@@ -11,5 +11,5 @@ get_header();
         endwhile;
     endif;
     ?>
-</div>
+</main>
 <?php get_footer(); ?>

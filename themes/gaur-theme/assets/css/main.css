@@ -5,11 +5,79 @@
 
 /* Let Bootstrap handle body and basic typography */
 body {
-    padding-top: 70px; /* Offset for sticky header */
+    padding-top: 0;
+}
+
+#content.site-content {
+    padding-top: 24px;
+}
+
+@media (max-width: 576px) {
+    #content.site-content {
+        padding-top: 16px;
+    }
 }
 
 /* Custom components only */
 .brand-highlight { color: var(--gaur-accent); }
+
+.gaur-site-header {
+    background-color: #E5E5E5 !important;
+    background-image: none !important;
+}
+
+.cart-count,
+.navbar .cart-count {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 5px;
+    border-radius: 50% !important;
+    font-size: 0.7rem;
+    line-height: 1;
+}
+
+.gaur-brand {
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+}
+
+.gaur-brand-logo {
+    display: block;
+    width: 180px !important;
+    height: 44px !important;
+    max-width: 180px !important;
+    object-fit: contain;
+    object-position: left center;
+    mix-blend-mode: multiply;
+}
+
+@media (max-width: 576px) {
+    .gaur-brand-logo {
+        width: 140px !important;
+        height: 36px !important;
+        max-width: 140px !important;
+    }
+}
+
+.gaur-page-content {
+    max-width: 1140px;
+}
+
+.gaur-page-content h1 {
+    margin-bottom: 1.5rem;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+}
+
+.gaur-page-content p,
+.gaur-page-content li {
+    color: #444;
+    line-height: 1.8;
+}
 
 .swatch-item {
     transition: all 0.2s ease-in-out;
@@ -24,6 +92,189 @@ body {
 /* Fix WooCommerce layout shifts */
 .price ins { text-decoration: none; font-weight: bold; }
 .price del { opacity: 0.5; font-size: 0.8em; }
+
+/* Keep WooCommerce archive controls and product grids inside the viewport. */
+body.archive.woocommerce #content,
+body.post-type-archive-product #content {
+    width: 100%;
+    max-width: 540px;
+    margin-inline: auto;
+    padding-inline: 12px;
+    box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+    body.archive.woocommerce #content,
+    body.post-type-archive-product #content {
+        max-width: 720px;
+    }
+}
+
+@media (min-width: 992px) {
+    body.archive.woocommerce #content,
+    body.post-type-archive-product #content {
+        max-width: 960px;
+    }
+}
+
+@media (min-width: 1200px) {
+    body.archive.woocommerce #content,
+    body.post-type-archive-product #content {
+        max-width: 1140px;
+    }
+}
+
+@media (min-width: 1400px) {
+    body.archive.woocommerce #content,
+    body.post-type-archive-product #content {
+        max-width: 1320px;
+    }
+}
+
+/* WooCommerce catalog: compact cards keep the shop focused on comparison. */
+body.archive.woocommerce #content > .woocommerce,
+body.post-type-archive-product #content > .woocommerce {
+    position: relative;
+}
+
+body.archive.woocommerce h1.page-title,
+body.post-type-archive-product h1.page-title {
+    margin: 0 0 1rem;
+    font-size: clamp(2rem, 3vw, 2.75rem);
+    font-weight: 700;
+}
+
+body.archive.woocommerce .gaur-breadcrumb,
+body.post-type-archive-product .gaur-breadcrumb {
+    padding-top: 0;
+    margin-bottom: 0.75rem;
+}
+
+body.archive.woocommerce .woocommerce-message,
+body.post-type-archive-product .woocommerce-message {
+    margin: 0 0 1.5rem;
+    padding: 0.9rem 1rem;
+    border-top: 2px solid var(--gaur-accent);
+    background: #f7f7f9;
+    font-size: 0.9rem;
+}
+
+body.archive.woocommerce .woocommerce-message .button,
+body.post-type-archive-product .woocommerce-message .button {
+    margin-left: 1rem;
+    border-radius: 4px;
+    background: var(--primary-black);
+    color: #fff;
+    padding: 0.55rem 0.9rem;
+}
+
+body.archive.woocommerce .woocommerce-result-count,
+body.post-type-archive-product .woocommerce-result-count {
+    margin: 0 0 1rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+body.archive.woocommerce form.woocommerce-ordering,
+body.post-type-archive-product form.woocommerce-ordering {
+    margin-bottom: 1rem;
+}
+
+body.archive.woocommerce form.woocommerce-ordering select,
+body.post-type-archive-product form.woocommerce-ordering select {
+    min-height: 38px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0 0.65rem;
+    background: #fff;
+}
+
+body.archive.woocommerce ul.products,
+body.post-type-archive-product ul.products {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+}
+
+body.archive.woocommerce ul.products::before,
+body.archive.woocommerce ul.products::after,
+body.post-type-archive-product ul.products::before,
+body.post-type-archive-product ul.products::after {
+    display: none;
+}
+
+body.archive.woocommerce ul.products li.product,
+body.post-type-archive-product ul.products li.product {
+    float: none;
+    width: auto;
+    margin: 0;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: #fff;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+body.archive.woocommerce ul.products li.product:hover,
+body.post-type-archive-product ul.products li.product:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+}
+
+body.archive.woocommerce ul.products li.product a img,
+body.post-type-archive-product ul.products li.product a img {
+    width: 100%;
+    height: 260px;
+    margin: 0 0 0.85rem;
+    object-fit: contain;
+    background: #f7f8f8;
+}
+
+body.archive.woocommerce ul.products li.product a img.woocommerce-loop-product__image-full,
+body.post-type-archive-product ul.products li.product a img.woocommerce-loop-product__image-full {
+    display: block;
+    height: 260px;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+body.archive.woocommerce ul.products li.product .woocommerce-loop-product__title,
+body.post-type-archive-product ul.products li.product .woocommerce-loop-product__title {
+    min-height: 2.7em;
+    margin: 0.25rem 0 0.5rem;
+    color: var(--primary-black);
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+body.archive.woocommerce ul.products li.product .price,
+body.post-type-archive-product ul.products li.product .price {
+    color: var(--primary-black);
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+@media (max-width: 767px) {
+    body.archive.woocommerce ul.products,
+    body.post-type-archive-product ul.products {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.85rem;
+    }
+
+    body.archive.woocommerce ul.products li.product a img,
+    body.post-type-archive-product ul.products li.product a img {
+        height: 190px;
+    }
+
+    body.archive.woocommerce .woocommerce-message .button,
+    body.post-type-archive-product .woocommerce-message .button {
+        display: block;
+        width: fit-content;
+        margin: 0.75rem 0 0;
+    }
+}
 
 
 /* =========================

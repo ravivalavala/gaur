@@ -7,8 +7,10 @@ if ( ! defined('ABSPATH') ) exit;
  */
 function gaur_get_shop_section_definitions() {
     return [
-        'gaur_clothing_section' => 'Clothing Section',
-        'gaur_shoes_section'    => 'Shoes Section',
+        'gaur_tactical_section' => [ 'label' => 'Tactical Boots', 'hero' => 'gaur-tactical-boots', 'category' => 'mens-tactical-boots', 'title' => 'Tactical Boots', 'limit' => 4 ],
+        'gaur_freedom_section'  => [ 'label' => 'Freedom Section', 'hero' => 'freedom-series-wear-your-boldness', 'category' => 'men-t-shirts', 'title' => 'Freedom Collection', 'limit' => 4 ],
+        'gaur_clothing_section' => [ 'label' => 'Clothing Section', 'hero' => 'stylish-hoodies-t-shirts', 'category' => 'clothing', 'title' => 'Clothing', 'limit' => 4 ],
+        'gaur_shoes_section'    => [ 'label' => 'Shoes Section', 'hero' => 'trendy-shoes-collection', 'category' => 'shoes', 'title' => 'Shoes', 'limit' => 4 ],
     ];
 }
 
@@ -40,16 +42,23 @@ function gaur_shop_sections_settings() {
         <hr>
 
         <form method="post" action="options.php">
-            <?php 
-            settings_fields('gaur_shop_sections'); 
-            
-            foreach ( $sections as $id => $label ) : 
-                $val = get_option($id, []); 
+            <?php
+            settings_fields('gaur_shop_sections');
+
+            foreach ( $sections as $id => $section ) :
+                $val = wp_parse_args(get_option($id, []), $section);
                 ?>
                 <div class="gaur-settings-box" style="background: #fff; border: 1px solid #ccd0d4; padding: 20px; margin-bottom: 20px;">
-                    <h2><?php echo esc_html($label); ?></h2>
-                    
+                    <h2><?php echo esc_html($section['label']); ?></h2>
+
                     <table class="form-table">
+                        <tr>
+                            <th scope="row">Hero Slug</th>
+                            <td>
+                                <input type="text" name="<?php echo $id; ?>[hero]" class="regular-text" value="<?php echo esc_attr($val['hero']); ?>">
+                                <p class="description">Hero displayed immediately before this product section.</p>
+                            </td>
+                        </tr>
                         <tr>
                             <th scope="row">Enable Section</th>
                             <td>
@@ -59,19 +68,33 @@ function gaur_shop_sections_settings() {
                         <tr>
                             <th scope="row">Display Title</th>
                             <td>
-                                <input type="text" name="<?php echo $id; ?>[title]" class="regular-text" value="<?php echo esc_attr($val['title'] ?? ''); ?>" placeholder="e.g. New Arrivals">
+                                <input type="text" name="<?php echo $id; ?>[title]" class="regular-text" value="<?php echo esc_attr($val['title']); ?>" placeholder="e.g. New Arrivals">
                             </td>
                         </tr>
                         <tr>
                             <th scope="row">Category Slug</th>
                             <td>
-                                <input type="text" name="<?php echo $id; ?>[category]" class="regular-text" value="<?php echo esc_attr($val['category'] ?? ''); ?>" placeholder="e.g. shoes">
+                                <select name="<?php echo $id; ?>[category]" class="regular-text">
+                                    <option value="">-- Select Category --</option>
+                                    <?php
+                                    $categories = get_terms([
+                                        'taxonomy'   => 'product_cat',
+                                        'hide_empty' => false,
+                                    ]);
+                                    if (!is_wp_error($categories)) {
+                                        foreach ($categories as $cat) {
+                                            $selected = ($val['category'] === $cat->slug) ? 'selected' : '';
+                                            echo '<option value="' . esc_attr($cat->slug) . '" ' . $selected . '>' . esc_html($cat->name) . '</option>';
+                                        }
+                                    }
+                                    ?>
+                                </select>
                             </td>
                         </tr>
                         <tr>
                             <th scope="row">Product Limit</th>
                             <td>
-                                <input type="number" name="<?php echo $id; ?>[limit]" value="<?php echo esc_attr($val['limit'] ?? 8); ?>">
+                                <input type="number" min="1" max="24" name="<?php echo $id; ?>[limit]" value="<?php echo esc_attr($val['limit']); ?>">
                             </td>
                         </tr>
                     </table>

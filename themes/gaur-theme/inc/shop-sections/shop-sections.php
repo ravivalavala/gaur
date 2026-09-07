@@ -17,13 +17,28 @@ add_action('wp_enqueue_scripts', function () {
     );
 });
 
-// FIX 2: Use the correct function name: gaur_render_dynamic_section
-function gaur_section_latest_clothing() {
-    // Passes 'clothing' as the style class
-    gaur_render_dynamic_section('gaur_clothing_section', 'clothing');
-}
+/**
+ * Shortcode: [gaur_product_section section="gaur_clothing_section"]
+ * All settings (category, title, limit) are managed in WP Admin under "GAUR Sections"
+ */
+add_shortcode('gaur_product_section', function ($atts) {
+    $atts = shortcode_atts([
+        'section' => '',
+        'style'   => '',
+    ], $atts, 'gaur_product_section');
 
-function gaur_section_latest_shoes() {
-    // Passes 'shoes' as the style class
-    gaur_render_dynamic_section('gaur_shoes_section', 'shoes');
+    if (empty($atts['section'])) return '';
+
+    gaur_render_dynamic_section($atts['section'], $atts['style']);
+});
+
+function gaur_render_homepage_sections() {
+    foreach ( gaur_get_shop_section_definitions() as $section_id => $section ) {
+        $settings = get_option( $section_id, [] );
+        $hero_slug = ! empty( $settings['hero'] ) ? $settings['hero'] : $section['hero'];
+        $style = sanitize_html_class( str_replace( 'gaur_', '', str_replace( '_section', '', $section_id ) ) );
+
+        echo do_shortcode( '[gaur_hero slug="' . esc_attr( $hero_slug ) . '"]' );
+        echo do_shortcode( '[gaur_product_section section="' . esc_attr( $section_id ) . '" style="' . esc_attr( $style ) . '"]' );
+    }
 }

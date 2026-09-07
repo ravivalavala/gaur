@@ -1,0 +1,14 @@
+# BEGIN WordPress
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+RewriteRule ^shop/?$ /index.php?post_type=product [QSA,L]
+RewriteRule ^product-category/([^/]+)/?$ /index.php?post_type=product&product_cat=$1 [QSA,L]
+RewriteRule ^product/([^/]+)/?$ /index.php?post_type=product&name=$1 [QSA,L]
+RewriteRule ^([^/]+)/?$ /index.php?pagename=$1 [QSA,L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+</IfModule>
+# END WordPress

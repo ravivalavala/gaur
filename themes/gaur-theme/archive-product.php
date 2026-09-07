@@ -11,11 +11,6 @@ get_header();
 ?>
 
 <div class="container py-5">
-    <!-- Breadcrumb -->
-    <nav aria-label="breadcrumb" class="mb-4">
-        <?php woocommerce_breadcrumb(); ?>
-    </nav>
-
     <!-- Archive Title -->
     <h1 class="mb-5"><?php woocommerce_page_title(); ?></h1>
 

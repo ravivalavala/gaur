@@ -6,22 +6,19 @@ defined( 'ABSPATH' ) || exit;
 
 get_header();
 
-global $post;
+global $post, $product;
 $product = wc_get_product( $post->ID );
 ?>
 
-<div class="container py-5">
+<div class="container py-5 gaur-product-page">
 
-    <!-- Breadcrumb -->
-    <nav class="mb-4">
-        <?php woocommerce_breadcrumb(); ?>
-    </nav>
+    <?php gaur_render_breadcrumbs(); ?>
 
     <div class="row">
 
         <!-- LEFT: Product Gallery -->
         <div class="col-lg-7 mb-4 mb-lg-0">
-            <div class="pe-lg-4">
+            <div class="pe-lg-4 gaur-product-gallery-panel">
                 <?php
                 /**
                  * WooCommerce Gallery
@@ -33,7 +30,7 @@ $product = wc_get_product( $post->ID );
 
         <!-- RIGHT: Product Info + FULL Description -->
         <div class="col-lg-5">
-            <div class="product-info-column ps-lg-3">
+            <div class="product-info-column ps-lg-3 gaur-product-summary">
 
                 <!-- Title -->
                 <h1 class="display-6 fw-bold mb-3"><?php the_title(); ?></h1>
@@ -48,11 +45,6 @@ $product = wc_get_product( $post->ID );
                 <!-- Price -->
                 <div class="h3 text-danger mb-4">
                     <?php echo $product->get_price_html(); ?>
-                </div>
-
-                <!-- FULL DESCRIPTION (Moved Here) -->
-                <div class="product-full-description mb-4">
-                    <?php the_content(); ?>
                 </div>
 
                 <!-- Add to Cart -->

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Clothing & Shoes Shop Setup - JSON Data File
  * Description: Creates clothing & shoes shop data with multiple images per product from JSON file
- * Version: 1.3.0
+ * Version: 1.4.0
  * Author: Your Name
  */
 
@@ -28,6 +28,7 @@ add_action('admin_init', function () {
 register_activation_hook(__FILE__, function () {
     if (class_exists('WooCommerce')) {
         WC()->init(); // ensure WC taxonomies & rewrites exist
+        ClothingShoesSetup::get_instance()->create_categories();
         flush_rewrite_rules();
     }
 });
@@ -214,6 +215,10 @@ class ClothingShoesSetup {
     public function create_all_ajax() {
         check_ajax_referer('css_nonce', 'nonce');
 
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error('Insufficient permissions.', 403);
+        }
+
         // Check if JSON file exists
         if (!file_exists($this->json_file_path)) {
             wp_send_json_error('JSON file not found: products.json');
@@ -236,7 +241,7 @@ class ClothingShoesSetup {
     /**
      * Create categories
      */
-    private function create_categories() {
+    public function create_categories() {
         $cats = [
             ['Men', 'men'],
             ['Women', 'women'],
@@ -256,7 +261,11 @@ class ClothingShoesSetup {
             ['Shirts', 'women-shirts', 'women-clothing'],
             
             ['Dresses', 'women-dresses', 'women-clothing'],
-            ['Shoes', 'men-shoes', 'men-footwear'],
+            ['Footwear', 'footwear'],
+            ['Boots', 'boots', 'footwear'],
+            ['Shoes', 'shoes', 'footwear'],
+            ['Men\'s Tactical Boots', 'mens-tactical-boots', 'boots'],
+            ['Shoes', 'men-shoes', 'shoes'],
             ['Sneakers', 'men-sneakers', 'men-footwear'],
             ['Accessories', 'accessories'],
         ];
@@ -264,20 +273,23 @@ class ClothingShoesSetup {
         foreach ($cats as $cat) {
             [$name, $slug, $parent_slug] = array_pad($cat, 3, null);
 
-            if (term_exists($slug, 'product_cat')) {
-                continue;
-            }
-
             $parent_id = 0;
             if ($parent_slug) {
                 $parent = get_term_by('slug', $parent_slug, 'product_cat');
                 $parent_id = $parent ? $parent->term_id : 0;
             }
 
-            wp_insert_term($name, 'product_cat', [
-                'slug'   => $slug,
-                'parent' => $parent_id
-            ]);
+            $term = get_term_by('slug', $slug, 'product_cat');
+            if (!$term) {
+                wp_insert_term($name, 'product_cat', [
+                    'slug'   => $slug,
+                    'parent' => $parent_id
+                ]);
+            } elseif ((int) $term->parent !== $parent_id) {
+                wp_update_term($term->term_id, 'product_cat', [
+                    'parent' => $parent_id,
+                ]);
+            }
         }
     }
 
@@ -299,6 +311,12 @@ class ClothingShoesSetup {
         }
 
         foreach ($data['products'] as $product_data) {
+            $existing_product_id = wc_get_product_id_by_sku($product_data['sku']);
+            if ($existing_product_id) {
+                $this->update_existing_product($existing_product_id, $product_data);
+                continue;
+            }
+
             $product_id = $this->create_single_product($product_data);
             if ($product_id) {
                 $this->created_products++;
@@ -312,6 +330,115 @@ class ClothingShoesSetup {
         }
     }
 
+    private function update_existing_product($product_id, $data) {
+        $product = wc_get_product($product_id);
+        if (!$product) {
+            return;
+        }
+
+        $product->set_name($data['name']);
+        $product->set_description($data['description'] ?? '');
+        $product->set_short_description($data['description'] ?? '');
+        $this->sync_product_categories($product, $data['categories'] ?? []);
+
+        if (!empty($data['variations'])) {
+            if (!$product->is_type('variable')) {
+                wp_delete_post($product_id, true);
+                $this->create_single_product($data);
+                return;
+            }
+
+            $this->set_variable_product_attributes($product, $data['variations']);
+            $product->save();
+            $this->update_product_variations($product, $data);
+        } else {
+            $product->set_regular_price($data['price']);
+            $product->set_manage_stock(isset($data['stock_quantity']));
+            if (isset($data['stock_quantity'])) {
+                $product->set_stock_quantity($data['stock_quantity']);
+            }
+            $product->save();
+        }
+    }
+
+    private function sync_product_categories($product, $category_slugs) {
+        if (empty($category_slugs)) {
+            return;
+        }
+
+        $category_ids = [];
+        foreach ($category_slugs as $category_slug) {
+            $category = get_term_by('slug', $category_slug, 'product_cat');
+            if (!$category) {
+                $created = wp_insert_term(ucwords(str_replace('-', ' ', $category_slug)), 'product_cat', [
+                    'slug' => $category_slug,
+                ]);
+                $category = !is_wp_error($created) ? get_term($created['term_id'], 'product_cat') : false;
+            }
+            if ($category) {
+                $category_ids[] = $category->term_id;
+            }
+        }
+
+        $aggregate_slug = 'clothing';
+        foreach ($category_slugs as $category_slug) {
+            if (strpos($category_slug, 'shoe') !== false || strpos($category_slug, 'boot') !== false || strpos($category_slug, 'footwear') !== false) {
+                $aggregate_slug = 'footwear';
+                break;
+            }
+        }
+
+        $aggregate = get_term_by('slug', $aggregate_slug, 'product_cat');
+        if ($aggregate) {
+            $category_ids[] = $aggregate->term_id;
+        }
+
+        if ($category_ids) {
+            wp_set_object_terms($product->get_id(), array_unique($category_ids), 'product_cat');
+        }
+    }
+
+    private function update_product_variations($product, $data) {
+        $quantity = (int) ($data['variations']['default_quantity'] ?? 10);
+        $expected_skus = [];
+
+        foreach ($data['variations']['color']['options'] as $color) {
+            foreach ($data['variations']['size']['options'] as $size) {
+                $sku = 'TACT-' . sanitize_title($color) . '-' . preg_replace('/[^0-9]/', '', $size);
+                $expected_skus[$sku] = [$color, $size];
+            }
+        }
+
+        foreach ($product->get_children() as $variation_id) {
+            $variation = wc_get_product($variation_id);
+            if (!$variation || !isset($expected_skus[$variation->get_sku()])) {
+                continue;
+            }
+
+            $variation->set_regular_price($data['price']);
+            $variation->set_manage_stock(true);
+            $variation->set_stock_quantity($quantity);
+            $variation->set_stock_status('instock');
+            $variation->save();
+            unset($expected_skus[$variation->get_sku()]);
+        }
+
+        foreach ($expected_skus as [$color, $size]) {
+            $variation = new WC_Product_Variation();
+            $variation->set_parent_id($product->get_id());
+            $variation->set_sku('TACT-' . sanitize_title($color) . '-' . preg_replace('/[^0-9]/', '', $size));
+            $variation->set_regular_price($data['price']);
+            $variation->set_manage_stock(true);
+            $variation->set_stock_quantity($quantity);
+            $variation->set_stock_status('instock');
+            $variation->set_attributes([
+                'pa_color' => sanitize_title($color),
+                'pa_size' => sanitize_title($size),
+            ]);
+            $variation->save();
+        }
+    }
+
     /**
      * Create a single product
      */
@@ -322,18 +449,21 @@ class ClothingShoesSetup {
             return false;
         }
 
-        // Create product
-        $product = new WC_Product_Simple();
+        // Create a variable parent when variation data is provided.
+        $is_variable = !empty($data['variations']);
+        $product = $is_variable ? new WC_Product_Variable() : new WC_Product_Simple();
         $product->set_name($data['name']);
         $product->set_sku($data['sku']);
-        $product->set_regular_price($data['price']);
         $product->set_status('publish');
-        $product->set_stock_status('instock');
-        
-        // Set stock quantity
-        if (isset($data['stock_quantity'])) {
-            $product->set_manage_stock(true);
-            $product->set_stock_quantity($data['stock_quantity']);
+
+        if (!$is_variable) {
+            $product->set_regular_price($data['price']);
+            $product->set_stock_status('instock');
+
+            if (isset($data['stock_quantity'])) {
+                $product->set_manage_stock(true);
+                $product->set_stock_quantity($data['stock_quantity']);
+            }
         }
 
         // Set description
@@ -347,19 +477,132 @@ class ClothingShoesSetup {
             $category_ids = [];
             foreach ($data['categories'] as $category_slug) {
                 $category = get_term_by('slug', $category_slug, 'product_cat');
-                if ($category) {
+                if (!$category) {
+                    $category_name = ucwords(str_replace('-', ' ', $category_slug));
+                    $created_category = wp_insert_term($category_name, 'product_cat', [
+                        'slug' => $category_slug,
+                    ]);
+                    if (!is_wp_error($created_category)) {
+                        $category_ids[] = $created_category['term_id'];
+                    }
+                } else {
                     $category_ids[] = $category->term_id;
                 }
             }
+
+            $aggregate_slug = 'clothing';
+            foreach ($data['categories'] as $category_slug) {
+                if (strpos($category_slug, 'shoe') !== false || $category_slug === 'men-footwear') {
+                    $aggregate_slug = 'shoes';
+                    break;
+                }
+            }
+            $aggregate = get_term_by('slug', $aggregate_slug, 'product_cat');
+            if (!$aggregate) {
+                $created_aggregate = wp_insert_term(ucfirst($aggregate_slug), 'product_cat', [
+                    'slug' => $aggregate_slug,
+                ]);
+                if (!is_wp_error($created_aggregate)) {
+                    $category_ids[] = $created_aggregate['term_id'];
+                }
+            } else {
+                $category_ids[] = $aggregate->term_id;
+            }
+
             if (!empty($category_ids)) {
                 $product->set_category_ids($category_ids);
             }
         }
 
+        if ($is_variable) {
+            $this->set_variable_product_attributes($product, $data['variations']);
+        }
+
         // Save product
         $product_id = $product->save();
 
+        if ($is_variable) {
+            $this->create_product_variations($product_id, $data);
+        }
+
         return $product_id;
+    }
+
+    private function set_variable_product_attributes($product, $variations) {
+        $attributes = [];
+
+        foreach (['color', 'size'] as $attribute_key) {
+            if (empty($variations[$attribute_key]['options'])) {
+                continue;
+            }
+
+            $taxonomy = 'pa_' . $attribute_key;
+            $attribute_id = wc_attribute_taxonomy_id_by_name($attribute_key);
+            if (!$attribute_id) {
+                $attribute_id = wc_create_attribute([
+                    'name' => $variations[$attribute_key]['label'],
+                    'slug' => $attribute_key,
+                ]);
+            }
+
+            if (is_wp_error($attribute_id)) {
+                continue;
+            }
+
+            register_taxonomy($taxonomy, ['product'], [
+                'hierarchical' => false,
+                'show_ui' => false,
+                'query_var' => true,
+                'rewrite' => false,
+            ]);
+
+            $term_ids = [];
+            foreach ($variations[$attribute_key]['options'] as $option) {
+                $term = get_term_by('name', $option, $taxonomy);
+                if (!$term) {
+                    $created = wp_insert_term($option, $taxonomy);
+                    if (!is_wp_error($created)) {
+                        $term = get_term($created['term_id'], $taxonomy);
+                    }
+                }
+                if ($term) {
+                    $term_ids[] = $term->term_id;
+                }
+            }
+
+            $attribute = new WC_Product_Attribute();
+            $attribute->set_id((int) $attribute_id);
+            $attribute->set_name($taxonomy);
+            $attribute->set_options($term_ids);
+            $attribute->set_position(count($attributes));
+            $attribute->set_visible(true);
+            $attribute->set_variation(true);
+            $attributes[$taxonomy] = $attribute;
+        }
+
+        $product->set_attributes($attributes);
+    }
+
+    private function create_product_variations($product_id, $data) {
+        $variations = $data['variations'];
+        $quantity = isset($variations['default_quantity']) ? (int) $variations['default_quantity'] : 10;
+
+        foreach ($variations['color']['options'] as $color) {
+            foreach ($variations['size']['options'] as $size) {
+                $variation = new WC_Product_Variation();
+                $variation->set_parent_id($product_id);
+                $variation->set_sku('TACT-' . sanitize_title($color) . '-' . preg_replace('/[^0-9]/', '', $size));
+                $variation->set_regular_price($data['price']);
+                $variation->set_manage_stock(true);
+                $variation->set_stock_quantity($quantity);
+                $variation->set_stock_status('instock');
+                $variation->set_attributes([
+                    'pa_color' => sanitize_title($color),
+                    'pa_size' => sanitize_title($size),
+                ]);
+                $variation->save();
+            }
+        }
     }
 
     /**

@@ -48,7 +48,7 @@
     {
       "name": "Leather Jacket",
       "sku": "JCK001",
-      "price": 89.99,
+      "price": 56.99,
       "categories": ["men-clothing"],
       "description": "Genuine leather jacket for men. Classic style with modern fit.",
       "stock_quantity": 15,
@@ -62,6 +62,26 @@
       "description": "Waterproof winter boots with insulation. Perfect for cold weather.",
       "stock_quantity": 18,
       "image_folder": "BTS001"
+    },
+    {
+      "name": "GAUR Men's Tactical Jungle Combat Boots",
+      "sku": "TACT001",
+      "price": 56.99,
+      "categories": ["boots", "mens-tactical-boots"],
+      "description": "8-inch tactical combat boots with genuine buffalo suede leather, heavy-duty nylon panels, side zipper, speed lacing, supportive ankle coverage, and a full rubber deep-lug outsole. Built for hiking, security work, airsoft, hunting, outdoor labor, and rugged everyday wear.",
+      "stock_quantity": 25,
+      "image_folder": "TACT001",
+      "variations": {
+        "color": {
+          "label": "Color",
+          "options": ["Black", "Coyote Brown"]
+        },
+        "size": {
+          "label": "Size",
+          "options": ["US 8", "US 9", "US 10", "US 11", "US 12"]
+        },
+        "default_quantity": 10
+      }
     }
   ]
 }

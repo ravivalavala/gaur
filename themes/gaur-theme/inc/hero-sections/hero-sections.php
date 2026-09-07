@@ -89,7 +89,7 @@ function gaur_load_hero_sample_data() {
             'post_status'  => 'publish',
             'post_type'    => 'hero_section',
             'post_name'    => sanitize_title($sample['slug'])
-        ]);
+        ], true);
         
         if ( is_wp_error($hero_id) ) {
             error_log('GAUR Hero: Failed to create post - ' . $hero_id->get_error_message());
@@ -112,13 +112,24 @@ function gaur_load_hero_sample_data() {
         $img_path = $base_path . 'images/' . $img_filename;
         
         if ( file_exists($img_path) ) {
-            // Method 1: Using media_sideload_image (simpler)
-            $attachment_id = media_sideload_image($img_path, $hero_id, $sample['title'], 'id');
+            $tmp_path = wp_tempnam($img_filename);
+            $attachment_id = false;
+
+            if ( $tmp_path && copy($img_path, $tmp_path) ) {
+                $attachment_id = media_handle_sideload([
+                    'name'     => basename($img_path),
+                    'tmp_name' => $tmp_path,
+                ], $hero_id, $sample['title']);
+            }
+
+            if ( $tmp_path && file_exists($tmp_path) ) {
+                wp_delete_file($tmp_path);
+            }
             
-            if ( ! is_wp_error($attachment_id) ) {
+            if ( $attachment_id && ! is_wp_error($attachment_id) ) {
                 set_post_thumbnail($hero_id, $attachment_id);
                 error_log('GAUR Hero: Image set for "' . $sample['title'] . '"');
-            } else {
+            } elseif ( is_wp_error($attachment_id) ) {
                 error_log('GAUR Hero: Failed to upload image - ' . $attachment_id->get_error_message());
             }
         } else {
@@ -132,9 +143,37 @@ function gaur_load_hero_sample_data() {
     return $imported_count;
 }
 
-// Hook for theme activation
-add_action('after_setup_theme', function() {
-    if ( ! get_option('gaur_hero_sample_loaded') ) {
+function gaur_hero_samples_need_sync() {
+    $json_path = gaur_get_hero_base_path() . 'hero-data.json';
+    if ( ! file_exists( $json_path ) ) {
+        return false;
+    }
+
+    $samples = json_decode( file_get_contents( $json_path ), true );
+    if ( ! is_array( $samples ) || empty( $samples ) ) {
+        return false;
+    }
+
+    foreach ( $samples as $sample ) {
+        $existing = get_posts( [
+            'post_type'      => 'hero_section',
+            'name'           => sanitize_title( $sample['slug'] ),
+            'posts_per_page' => 1,
+            'post_status'    => 'any',
+            'fields'         => 'ids',
+        ] );
+
+        if ( empty( $existing ) ) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+// Keep bundled heroes recoverable after theme/plugin reinstall or manual deletion.
+add_action('init', function() {
+    if ( ! get_option('gaur_hero_sample_loaded') || gaur_hero_samples_need_sync() ) {
         $count = gaur_load_hero_sample_data();
         if ( $count !== false ) {
             update_option('gaur_hero_sample_loaded', true);
@@ -142,7 +181,7 @@ add_action('after_setup_theme', function() {
             error_log('GAUR Hero: Auto-loaded ' . $count . ' sample hero sections');
         }
     }
-});
+}, 20);
 
 // Add admin notice to show import status
 add_action('admin_notices', function() {
@@ -179,7 +218,7 @@ add_action('admin_init', function() {
         // Import samples
         $count = gaur_load_hero_sample_data();
         
-        if ( $count !== false && $count > 0 ) {
+        if ( $count !== false ) {
             update_option('gaur_hero_sample_loaded', true);
             update_option('gaur_hero_sample_count', $count);
             

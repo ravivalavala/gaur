@@ -9,12 +9,12 @@
 <?php wp_body_open(); ?>
 
 <!-- Bootstrap Navigation -->
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+<nav class="navbar navbar-expand-lg navbar-light gaur-site-header shadow-sm sticky-top">
     <div class="container-fluid px-4 px-lg-5">
         <div class="container-xxl d-flex align-items-center">
             <!-- Logo/Brand -->
-            <a class="navbar-brand fw-bold fs-3" href="<?php echo home_url(); ?>">
-                <i class="bi bi-lightning-charge-fill text-danger"></i> GAUR
+            <a class="navbar-brand gaur-brand" href="<?php echo esc_url( home_url( '/' ) ); ?>">
+                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/branding.jpg' ); ?>" alt="GAUR" class="gaur-brand-logo" width="180" height="44">
             </a>
             
             <!-- Mobile Toggle Button -->
